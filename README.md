@@ -28,9 +28,10 @@ remwaste-api-framework/
 
 Before running the tests, ensure you have the following installed:
 
-- **Node.js** (version 14 or higher)
+- **Node.js** (version 18 or higher recommended)
 - **npm** (comes with Node.js)
 - **Git** (for cloning the repository)
+- **Git Bash** (For Windows users)
 
 ### Local Setup from Scratch
 
@@ -70,7 +71,7 @@ chmod +x run-tests.sh
 ./run-tests.sh
 ```
 
-**Note for Windows users**: Use Git Bash terminal to run the shell script. If you don't have Git Bash, use Method 3 (PowerShell) instead.
+**Note for Windows users**: Use Git Bash terminal to run the shell script.
 
 ### Method 2: Direct Newman Command
 
@@ -80,17 +81,6 @@ newman run collections/remwaste-api-framework.postman_collection.json \
   --iteration-data data/login-cases.json \
   --reporters cli,htmlextra,json \
   --reporter-htmlextra-export reports/remwaste-report.html \
-  --reporter-json-export reports/remwaste-report.json
-```
-
-### Method 3: Windows PowerShell
-
-```powershell
-newman run collections/remwaste-api-framework.postman_collection.json `
-  -e environments/RemwasteENV.postman_environments.json `
-  --iteration-data data/login-cases.json `
-  --reporters cli,htmlextra,json `
-  --reporter-htmlextra-export reports/remwaste-report.html `
   --reporter-json-export reports/remwaste-report.json
 ```
 
@@ -163,4 +153,3 @@ Contains:
 - Test scripts
 - Assertions and validations
 - Pre-request scripts
-   ```
