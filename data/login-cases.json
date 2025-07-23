@@ -1,0 +1,18 @@
+[
+  {
+    "email": "nipuna@gmail.com",
+    "password": "test1234",
+    "username": "Nipuna Jayawardana",
+    "expected": "success"
+  },
+  {
+    "email": "nipuna@gmail.com",
+    "password": "wrongpass",
+    "expected": "wrong_credentials"
+  },
+  {
+    "email": "invalid@email.com",
+    "password": "wrongpass",
+    "expected": "user_not_found"
+  }
+]

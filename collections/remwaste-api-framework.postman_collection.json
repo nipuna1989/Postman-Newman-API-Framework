@@ -1,0 +1,398 @@
+{
+	"info": {
+		"_postman_id": "35d7ae41-9704-4c68-b0e8-2c4eccfef7d0",
+		"name": "remwaste-api-framework",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16511776"
+	},
+	"item": [
+		{
+			"name": "Login Test",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json();\r",
+							"const expected = pm.iterationData.get(\"expected\");\r",
+							"const email = pm.iterationData.get(\"email\");\r",
+							"const username = pm.iterationData.get(\"username\");\r",
+							"\r",
+							"// 1. Test: Basic status code check\r",
+							"pm.test(\"Status and response validation\", function () {\r",
+							"    if (expected === \"success\") {\r",
+							"        pm.response.to.have.status(200);\r",
+							"        pm.expect(res.user.email, \"Returned email does not match test data\").to.eql(email);\r",
+							"        pm.expect(res.user.username, \"Returned username does not match test data\").to.eql(username);\r",
+							"        pm.environment.set(\"token\", res.user.token);\r",
+							"        \r",
+							"    } else if (expected === \"wrong_credentials\") {\r",
+							"        pm.response.to.have.status(422);\r",
+							"        pm.expect(res.errors.body[0]).to.include(\"Wrong email/password\");\r",
+							"    } else if (expected === \"user_not_found\") {\r",
+							"        pm.response.to.have.status(404);\r",
+							"        pm.expect(res.errors.body[0]).to.include(\"Email not found\");\r",
+							"    } \r",
+							"});\r",
+							"\r",
+							"// 2. Test: Schema validation for successful response\r",
+							"pm.test(\"Response schema is valid for success\", function () {\r",
+							"    if (expected === \"success\") {\r",
+							"        pm.expect(res).to.have.property(\"user\");\r",
+							"        pm.expect(res.user).to.have.all.keys(\"email\", \"username\", \"bio\", \"image\", \"token\");\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"// 3. Test: Ensure user object is not present in negative responses\r",
+							"pm.test(\"No user object in failure responses\", function () {\r",
+							"    if (expected !== \"success\") {\r",
+							"        pm.expect(res).to.not.have.property(\"user\");\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"user\": {\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /user – profile check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json();\r",
+							"\r",
+							"// 1. Test: Basic status code check\r",
+							"pm.test(\"Get User success - status 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2. Test: Schema validation for successful response\r",
+							"pm.test(\"Response has user object with required fields\", () => {\r",
+							"    pm.expect(res).to.have.property(\"user\");\r",
+							"    pm.expect(res.user).to.have.all.keys(\"username\", \"bio\", \"image\", \"token\", \"email\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/user",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /articles – Create Article",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"random\", Math.floor(Math.random() * 100000));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json();\r",
+							"\r",
+							"// 1. Test: status code\r",
+							"pm.test(\"Status code is 201\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// 2. Test: Schema validation for successful response\r",
+							"pm.test(\"Article object has all required keys\", () => {\r",
+							"    pm.expect(res).to.have.property(\"article\");\r",
+							"\r",
+							"    // Check keys of article\r",
+							"    pm.expect(res.article).to.have.all.keys(\r",
+							"        \"slug\",\r",
+							"        \"title\",\r",
+							"        \"description\",\r",
+							"        \"body\",\r",
+							"        \"createdAt\",\r",
+							"        \"updatedAt\",\r",
+							"        \"tagList\",\r",
+							"        \"author\",\r",
+							"        \"favorited\",\r",
+							"        \"favoritesCount\"\r",
+							"    );\r",
+							"\r",
+							"    // Check author keys\r",
+							"    pm.expect(res.article.author).to.have.all.keys(\r",
+							"        \"username\",\r",
+							"        \"bio\",\r",
+							"        \"image\",\r",
+							"        \"following\",\r",
+							"        \"followersCount\"\r",
+							"    );\r",
+							"\r",
+							"    // Save slug for use in update/delete requests\r",
+							"    pm.environment.set(\"slug\", res.article.slug);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"article\": {\r\n    \"title\": \"Title{{random}}\",\r\n    \"description\": \"description\",\r\n    \"body\": \"body\",\r\n    \"tagList\": [\"jaca\", \"testing\"]\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/articles",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"articles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /articles/:slug – Update Article",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test 1: Status code is 200\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Test 2: Schema validation for successful response and updated field validation\r",
+							"pm.test(\"Article Updated: keys and updated fields\", () => {\r",
+							"    const res = pm.response.json();\r",
+							"\r",
+							"    // Check article keys\r",
+							"    pm.expect(res).to.have.property(\"article\");\r",
+							"    pm.expect(res.article).to.have.all.keys(\r",
+							"        \"slug\",\r",
+							"        \"title\",\r",
+							"        \"description\",\r",
+							"        \"body\",\r",
+							"        \"createdAt\",\r",
+							"        \"updatedAt\",\r",
+							"        \"tagList\",\r",
+							"        \"author\",\r",
+							"        \"favorited\",\r",
+							"        \"favoritesCount\"\r",
+							"    );\r",
+							"\r",
+							"    // Check updated values\r",
+							"    pm.expect(res.article.title).to.include(\"updated\");\r",
+							"    pm.expect(res.article.description).to.eql(\"updated description\");\r",
+							"    pm.expect(res.article.body).to.eql(\"updated body\");\r",
+							"    pm.expect(res.article.tagList).to.include(\"jaca\");\r",
+							"\r",
+							"    // Save updated slug\r",
+							"    pm.environment.set(\"slug\", res.article.slug);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"article\": {\r\n    \"title\": \"{{slug}} - updated\",\r\n    \"description\": \"updated description\",\r\n    \"body\": \"updated body\",\r\n    \"tagList\": [\"jaca\", \"testing\"]\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/articles/{{slug}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"articles",
+						"{{slug}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /articles/:slug – Delete Article",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test 1: Status code is 200\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Test 2: Schema validation for successful response and article Deleted message validation\r",
+							"pm.test(\"Article Deleted message is correct\", () => {\r",
+							"    const res = pm.response.json();\r",
+							"\r",
+							"    pm.expect(res).to.have.property(\"message\");\r",
+							"    pm.expect(res.message).to.have.property(\"body\").that.is.an(\"array\");\r",
+							"    pm.expect(res.message.body[0]).to.include(\"Article deleted successfully\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/articles/{{slug}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"articles",
+						"{{slug}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "random",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
