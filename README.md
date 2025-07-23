@@ -37,10 +37,14 @@ Before running the tests, ensure you have the following installed:
 1. **Clone the repository**
    ```bash
    git clone https://github.com/nipuna1989/remwaste-api
+   ```
+
+2. **Navigate to the project directory**
+   ```bash
    cd remwaste-api
    ```
 
-2. **Install Newman and required packages**
+3. **Install Newman and required packages**
    ```bash
    # Install Newman globally
    npm install -g newman
@@ -49,7 +53,7 @@ Before running the tests, ensure you have the following installed:
    npm install -g newman-reporter-htmlextra
    ```
 
-3. **Verify installation**
+4. **Verify installation**
    ```bash
    newman --version
    ```
