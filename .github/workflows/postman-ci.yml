@@ -1,0 +1,48 @@
+name: Run Postman Tests with Newman
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  postman-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Newman
+      run: npm install -g newman
+
+    - name: Run Newman Collection
+      run: |
+        mkdir -p reports
+        echo "Running Remwaste API Tests"
+        newman run collections/remwaste-api-framework.postman_collection.json \
+          -e environments/RemwasteENV.postman_environments.json \
+          --iteration-data data/login-cases.json \
+          --reporters cli,json,html \
+          --reporter-html-export reports/remwaste-report.html \
+          --reporter-json-export reports/remwaste-report.json
+
+    - name: Upload HTML Report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: remwaste-html-report
+        path: reports/remwaste-report.html
+
+    - name: Upload JSON Report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: remwaste-json-report
+        path: reports/remwaste-report.json
