@@ -113,7 +113,7 @@ You can also run tests on-demand:
 
 1. Go to your GitHub repository
 2. Click on the **Actions** tab
-3. Select **"Run Postman Tests with Newman"** workflow
+3. Select **"Run Rem Waste API Tests"** workflow
 4. Click **"Run workflow"** button
 5. Choose the branch and click **"Run workflow"**
 

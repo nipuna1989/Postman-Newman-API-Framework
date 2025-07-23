@@ -1,4 +1,4 @@
-name: Run Postman Tests with Newman
+name: Run Rem Waste API Tests 
 
 on:
   push:
