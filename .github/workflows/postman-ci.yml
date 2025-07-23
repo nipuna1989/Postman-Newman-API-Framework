@@ -35,14 +35,14 @@ jobs:
 
     - name: Upload HTML Report
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: remwaste-html-report
         path: reports/remwaste-report.html
 
     - name: Upload JSON Report
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: remwaste-json-report
         path: reports/remwaste-report.json
