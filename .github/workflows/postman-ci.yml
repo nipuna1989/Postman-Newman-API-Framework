@@ -20,7 +20,9 @@ jobs:
         node-version: '18'
 
     - name: Install Newman
-      run: npm install -g newman
+      run: |
+        npm install -g newman
+        npm install -g newman-reporter-htmlextra
 
     - name: Run Newman Collection
       run: |
@@ -29,8 +31,8 @@ jobs:
         newman run collections/remwaste-api-framework.postman_collection.json \
           -e environments/RemwasteENV.postman_environments.json \
           --iteration-data data/login-cases.json \
-          --reporters cli,json,html \
-          --reporter-html-export reports/remwaste-report.html \
+          --reporters cli,htmlextra,json \
+          --reporter-htmlextra-export reports/remwaste-report.html \
           --reporter-json-export reports/remwaste-report.json
 
     - name: Upload HTML Report
