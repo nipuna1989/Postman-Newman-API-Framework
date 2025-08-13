@@ -1,11 +1,11 @@
-# Remwaste API Test Automation Framework
+# API Test Automation Framework
 
-This project contains automated API tests for the Remwaste assignment using Postman collections and Newman for execution. The framework supports both local testing and CI/CD automation through GitHub Actions.
+This project contains automated API tests using Postman collections and Newman for execution. The framework supports both local testing and CI/CD automation through GitHub Actions.
 
 ## Project Structure
 
 ```
-remwaste-api-framework/
+api-framework/
 ├── .github/
 │   └── workflows/
 │       └── postman-ci.yml          # GitHub Actions workflow for CI/CD
@@ -37,12 +37,12 @@ Before running the tests, ensure you have the following installed:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/nipuna1989/remwaste-api
+   git clone https://github.com/nipuna1989/Postman-Newman-API-Framework
    ```
 
 2. **Navigate to the project directory**
    ```bash
-   cd remwaste-api
+   cd api-framework
    ```
 
 3. **Install Newman and required packages**
