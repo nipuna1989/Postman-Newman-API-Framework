@@ -10,9 +10,9 @@ api-framework/
 │   └── workflows/
 │       └── postman-ci.yml          # GitHub Actions workflow for CI/CD
 ├── collections/
-│   └── remwaste-api-framework.postman_collection.json  # Main test collection
+│   └── api-framework.postman_collection.json  # Main test collection
 ├── environments/
-│   └── RemwasteENV.postman_environments.json          # Environment variables
+│   └── ENV.postman_environments.json          # Environment variables
 ├── data/
 │   └── login-cases.json            # Test data for data-driven login tests
 ├── reports/                        # Generated test reports (created at runtime)
@@ -76,8 +76,8 @@ chmod +x run-tests.sh
 ### Method 2: Direct Newman Command
 
 ```bash
-newman run collections/remwaste-api-framework.postman_collection.json \
-  -e environments/RemwasteENV.postman_environments.json \
+newman run collections/api-framework.postman_collection.json \
+  -e environments/ENV.postman_environments.json \
   --iteration-data data/login-cases.json \
   --reporters cli,htmlextra,json \
   --reporter-htmlextra-export reports/remwaste-report.html \
@@ -131,7 +131,7 @@ The GitHub Actions workflow (`.github/workflows/postman-ci.yml`) includes:
 
 ## Configuration Files
 
-### Environment Variables (`environments/RemwasteENV.postman_environments.json`)
+### Environment Variables (`environments/ENV.postman_environments.json`)
 
 Contains environment-specific configurations such as:
 - Base URLs
@@ -146,7 +146,7 @@ Contains test data for data-driven testing:
 - Test scenarios
 - Input variations
 
-### Collection (`collections/remwaste-api-framework.postman_collection.json`)
+### Collection (`collections/api-framework.postman_collection.json`)
 
 Contains:
 - API endpoint definitions
