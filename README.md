@@ -10,9 +10,9 @@ api-framework/
 │   └── workflows/
 │       └── postman-ci.yml          # GitHub Actions workflow for CI/CD
 ├── collections/
-│   └── remwaste-api-framework.postman_collection.json  # Main test collection
+│   └── api-framework.postman_collection.json  # Main test collection
 ├── environments/
-│   └── RemwasteENV.postman_environments.json          # Environment variables
+│   └── ENV.postman_environments.json          # Environment variables
 ├── data/
 │   └── login-cases.json            # Test data for data-driven login tests
 ├── reports/                        # Generated test reports (created at runtime)
